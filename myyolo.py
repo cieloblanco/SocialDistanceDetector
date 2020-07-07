@@ -207,29 +207,35 @@ class ObjectDetector:
         #                             cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 255, 0), 1)
 
         ##############################################################################################
-        for i in range(0, len(results)):
-            # (confidence, box, centroid) = results[i]
-            for j in range(i+1, len(results)):
+        for i in range(0,len(results)):
+            for j in range(i+1,len(results)): #(confidence, box, centroid) = results[i]
 
                 (confidence, boxi, centroid) = results[i]
                 (startXi, startYi, endXi, endYi) = boxi
-
+                
                 (confidence, boxj, centroid) = results[j]
                 (startXj, startYj, endXj, endYj) = boxj
 
-                hbbf = endYi - startYi  # height bounding box frente / atras
-                hbba = endYj - startYj
+                hbbf = endYi - startYi #height bounding box frente / atras
+                wbbf = endXi - startXi
+                hbba = endYj - startYj #
+                wbba = endXj - startXj
                # height = endYi - startYi
-
+               
                 if endYj > endYi:
                     hbbf = endYj - startYj
+                    wbbf = endXj - startXj
                     hbba = endYi - startYi
+                    wbba = endXi - startXi
                     #height = endYj - startYj
-                print(i, j, hbbf, hbba, abs(endYi-endYj), hbbf)
-
-                if hbba > (hbbf-hbba) and abs(endYi-endYj) <= hbbf*(5.0/10) and abs(endXi-endXj) <= hbbf*(5.0/10):
+                #print(i,j,hbbf, hbba, abs(endYi-endYj), hbbf)
+                
+                if  hbba>(hbbf-hbba) and wbba>(wbbf-wbba) and  abs(endYi-endYj) <= hbbf*(5.0/10) and abs(endXi-endXj) <= hbbf*(5.0/10) :                    
                     proximity.append(i)
                     proximity.append(j)
+                    warning_label = "Maintain Safe Distance. Move away!"
+                    cv2.putText(frame, warning_label, (50, 50),
+                                cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 255, 0), 1)
 ##############################################################################################
 
         low = 0
